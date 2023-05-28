@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <!---로그인페이지--->
+        <title>예매</title>
+
+        <section class="login">
+            
+            
+            <form class="hidden" id="login-form" >
+                <h1>밴드 심금</h1>
+                <div class="int-area">
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        autocomplete="off"
+                        required
+                    />
+                    <label for="name">이름</label>
+                </div>
+
+                <div class="int-area">
+                    <input
+                        type="text"
+                        name="student_number"
+                        id="student_number"
+                        autocomplete="off"
+                        required
+                    />
+                    <label for="student_number">학번</label>
+                </div>
+
+                <div class="btn-area">
+                    <button id="btn" type="submit">LOGIN</button>
+                </div>
+
+                
+
+            </form>
+
+            <div class="output" id="greeting">
+                <h2 class="hidden" id="greeting1"></h2>
+                <h2 class="hidden" id="greeting2"></h2>
+            </div>
+
+            <div class="remove-btn">
+                <input type="button" class="hidden" id="remove_storage" value="정보 제거">
+            </div>
+            
+        </section>
+        
+
+
+
+        <script>
+
+const loginForm = document.querySelector("#login-form");
+const loginInput1 = document.querySelector("#name");
+const loginInput2 = document.querySelector("#student_number");
+const greeting1 = document.querySelector("#greeting1");
+const greeting2 = document.querySelector("#greeting2");
+
+const savedUsername = localStorage.getItem("username")
+const savedStudent_number = localStorage.getItem("student_number")
+
+///1번쨰
+if (savedUsername === null){ ////저장된 정보가 없으면
+  loginForm.classList.remove("hidden"); ///hidden 클래스를 제거
+  loginForm.addEventListener("submit", onLoginSubmit); ///submit 이벤트가 발생하면 on함수 실행
+} else {
+  paintGreetings1(savedUsername)
+  paintGreetings2(savedStudent_number) ///아니면 저장된 이름으로 pain~~함수 실행
+}
+
+////2번쨰
+function onLoginSubmit(event) {
+  event.preventDefault(); ///새로고침 없게 만들기
+  loginForm.classList.add("hidden") ;  ///로그인 폼 안보이게하기
+
+  const username = loginInput1.value;  ///이름
+  const student_number = loginInput2.value;  ///학번
+
+  localStorage.setItem("username", username);  ///이름저장
+  localStorage.setItem("student_number",student_number) ///학번저장
+  paintGreetings1(username); ///이름 출력
+  paintGreetings2(student_number); ///학번출력
+  removeBtn.classList.remove("hidden")
+}
+
+/// 이름 학번 출력하는 함수
+function paintGreetings1(username){
+  greeting1.innerText = `반갑습니다 ${username}님`;
+  greeting1.classList.remove("hidden");
+}
+
+function paintGreetings2(student_number){
+  greeting2.innerText = `학번은 ${student_number}입니다`;
+  greeting2.classList.remove("hidden");
+}
+
+
+///정보 제거 하는 함수
+const removeBtn = document.querySelector("#remove_storage");
+
+function removeStorage() {
+localStorage.removeItem("username");
+localStorage.removeItem("student_number");
+removeBtn.classList.add("hidden")
+window.location.reload();
+
+}
+
+removeBtn.addEventListener("click", removeStorage);
+
+
+
+        </script>
+
+
+
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500&display=swap");
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            .hidden{
+                display: none;
+            }
+            body {
+                font-family: "Noto Sans KR", sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background: url("../img/KakaoTalk_20220725_091735629.jpg") no-repeat center;
+                background-size: cover;
+            }
+            body::before {
+                content: "";
+                position: absolute;
+                z-index: 1;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background-color: rgba(0, 0, 0, 0.6);
+            }
+            .login {
+                position: relative;
+                z-index: 2;
+            }
+            .login h1 {
+                font-size: 50px;
+                color: #fff;
+                text-align: center;
+                margin-bottom: 60px;
+            }
+
+            .int-area {
+                width: 400px;
+                position: relative;
+                margin-top: 20px;
+            }
+            .int-area:first-child {
+                margin-top: 0;
+            }
+            .int-area input {
+                width: 100%;
+                padding: 20px 10px 10px;
+                /* 배경색이 없습니다.*/
+                background-color: transparent;
+                border: none;
+                border-bottom: 1px solid #999;
+                font-size: 18px;
+                color: #fff;
+                outline: none;
+            }
+            .int-area label {
+                position: absolute;
+                left: 10px;
+                top: 15px;
+                font-size: 18px;
+                color: #999;
+                transition: top 0.5s ease;
+            }
+            .int-area label.warning {
+                color: red !important;
+                animation: warning 0.3s ease;
+                animation-iteration-count: 3;
+            }
+            @keyframes warning {
+                0% {
+                    transform: translateX(-8px);
+                }
+                25% {
+                    transform: translateX(8px);
+                }
+                50% {
+                    transform: translateX(-8px);
+                }
+                100% {
+                    transform: translateX(8px);
+                }
+            }
+
+            .int-area input:focus + label,
+            .int-area input:valid + label {
+                top: 0;
+                font-size: 13px;
+                color: #166cea;
+            }
+
+            .btn-area {
+                margin-top: 30px;
+            }
+            .btn-area button {
+                width: 100%;
+                height: 50px;
+                background-color: #166cea;
+                color: #fff;
+                border: none;
+                font-size: 20px;
+                border-radius: 25px;
+            }
+          
+            .output{
+                font-size: 30px;
+                text-align: left;
+            }
+            .remove-btn{
+                margin-top: 50px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            #remove_storage{
+                width: 200px;
+                height: 30px;
+                font-size: 15px;
+                border-radius: 50px;
+                border: 1px solid;
+                background-color: rgb(128, 128, 128);
+                border-color: rgb(220, 220, 220);
+            }
+
+        </style>
+    </body>
+</html>
